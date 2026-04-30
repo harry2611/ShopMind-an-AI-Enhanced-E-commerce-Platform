@@ -16,12 +16,6 @@ ShopMind is an AI-enhanced e-commerce platform scaffold built with React 18, Typ
 
 ## Screenshots
 
-### GitHub contributors panel
-
-![GitHub contributors panel](docs/screenshots/github-contributors-panel.png)
-
-Shows the GitHub repository contributors area. Commits authored with a GitHub-linked identity are what populate this panel.
-
 ### Homepage hero and categories
 
 ![ShopMind homepage hero and category navigation](docs/screenshots/homepage-hero-categories.png)
