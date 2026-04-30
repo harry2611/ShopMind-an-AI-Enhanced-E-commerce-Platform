@@ -14,6 +14,38 @@ ShopMind is an AI-enhanced e-commerce platform scaffold built with React 18, Typ
 - FastAPI services for products, recommendations, semantic search, assistant chat, personalization events, and reviews.
 - Docker Compose stack for frontend, backend, PostgreSQL + pgvector, Redis, and Nginx reverse proxy.
 
+## Screenshots
+
+### GitHub contributors panel
+
+![GitHub contributors panel](docs/screenshots/github-contributors-panel.png)
+
+Shows the GitHub repository contributors area. Commits authored with a GitHub-linked identity are what populate this panel.
+
+### Homepage hero and categories
+
+![ShopMind homepage hero and category navigation](docs/screenshots/homepage-hero-categories.png)
+
+Shows the ShopMind landing experience with the AI commerce hero, semantic search bar, countdown promotion, cart/wishlist indicators, and category navigation.
+
+### Personalized recommendations and trending products
+
+![ShopMind recommendations and trending products](docs/screenshots/recommendations-trending-products.png)
+
+Shows the personalized "Recommended for you" carousel and trending product grid with product cards, ratings, stock counts, wishlist controls, and add-to-cart actions.
+
+### Smart shopping cart
+
+![ShopMind smart cart drawer](docs/screenshots/smart-cart-drawer.png)
+
+Shows the slide-out smart cart with free-shipping messaging, cart line items, save-for-later controls, AI upsell suggestions, promo-code validation, discount calculation, delivery estimate, and checkout total.
+
+### AI shopping assistant
+
+![ShopMind AI assistant widget](docs/screenshots/ai-assistant-widget.png)
+
+Shows the floating ShopMind assistant answering a gift recommendation request with streaming-style chat output, quick replies, and embedded product cards.
+
 ## Run locally
 
 ```bash
