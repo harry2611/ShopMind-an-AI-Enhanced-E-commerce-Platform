@@ -64,9 +64,18 @@ export type AutocompleteResponse = {
   recent_searches: string[];
 };
 
+export type OrderSummary = {
+  id: string;
+  status: string;
+  total: string;
+  created_at: string;
+};
+
 export type AssistantMessage = {
   id: string;
   role: 'user' | 'assistant';
   content: string;
   products?: Product[];
+  orderStatus?: OrderSummary[];
+  cartAdded?: Product;
 };

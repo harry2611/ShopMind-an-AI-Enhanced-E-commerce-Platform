@@ -1,7 +1,53 @@
+import re
 from collections import Counter
 from decimal import Decimal
 from app.schemas.shop import Product
 from app.services.catalog import PRODUCTS
+
+# ── Query parsing helpers ────────────────────────────────────────────────────
+
+_CATEGORY_KEYWORDS: dict[str, list[str]] = {
+    "Electronics": ["electronics", "tech", "gadget", "laptop", "computer", "headphone", "speaker", "camera", "monitor"],
+    "Style": ["fashion", "clothing", "clothes", "style", "wear", "shirt", "dress", "pants", "jacket", "shoe", "sneaker"],
+    "Home": ["home", "furniture", "kitchen", "bedroom", "living", "house", "decor", "candle", "pillow"],
+    "Wellness": ["wellness", "health", "fitness", "gym", "yoga", "sport", "exercise", "workout", "supplement", "skincare"],
+    "Mobile": ["mobile", "phone", "smartphone", "iphone", "android", "tablet"],
+    "Gifts": ["gift", "present", "birthday", "holiday", "christmas", "anniversary", "mom", "dad", "friend"],
+}
+
+
+def parse_price_filter(query: str) -> tuple[Decimal | None, Decimal | None]:
+    """Extract min/max price constraints from a natural language query."""
+    q = query.lower()
+    max_price: Decimal | None = None
+    min_price: Decimal | None = None
+
+    under = re.search(r"(?:under|below|less than|cheaper than|max|within|budget of)\s*\$?(\d+)", q)
+    over  = re.search(r"(?:over|above|more than|at least|min(?:imum)?)\s*\$?(\d+)", q)
+    around = re.search(r"(?:around|about|~)\s*\$?(\d+)", q)
+    bare   = re.search(r"\$(\d+)", q)
+
+    if under:
+        max_price = Decimal(under.group(1))
+    if over:
+        min_price = Decimal(over.group(1))
+    if around:
+        amt = Decimal(around.group(1))
+        min_price = amt * Decimal("0.7")
+        max_price = amt * Decimal("1.3")
+    if bare and not under and not around:
+        max_price = Decimal(bare.group(1))
+
+    return min_price, max_price
+
+
+def parse_category_filter(query: str) -> str | None:
+    """Detect a product category mentioned in the query."""
+    q = query.lower()
+    for category, keywords in _CATEGORY_KEYWORDS.items():
+        if any(kw in q for kw in keywords):
+            return category
+    return None
 
 
 def score_product(product: Product, terms: list[str], preferred_categories: list[str]) -> float:
@@ -31,6 +77,34 @@ def search_products(query: str, limit: int = 12) -> list[Product]:
     candidates = [product for product in PRODUCTS if budget is None or product.price <= budget]
     ranked = sorted(candidates, key=lambda product: score_product(product, terms, []), reverse=True)
     return [product for product in ranked[:limit] if score_product(product, terms, []) > product.rating * 2 or not terms]
+
+
+def search_products_smart(query: str, limit: int = 12) -> list[Product]:
+    """Enhanced search with price range and category filters extracted from natural language."""
+    terms = parse_query_terms(query)
+    min_price, max_price = parse_price_filter(query)
+    category = parse_category_filter(query)
+
+    candidates = PRODUCTS
+    if min_price is not None:
+        candidates = [p for p in candidates if p.price >= min_price]
+    if max_price is not None:
+        candidates = [p for p in candidates if p.price <= max_price]
+    if category:
+        preferred = [p for p in candidates if p.category == category]
+        if preferred:
+            candidates = preferred
+
+    if not candidates:
+        candidates = PRODUCTS  # widen if filters leave nothing
+
+    preferred_categories = [category] if category else []
+    ranked = sorted(candidates, key=lambda p: score_product(p, terms, preferred_categories), reverse=True)
+
+    # Return any result if there are terms; otherwise top-rated
+    if terms:
+        return ranked[:limit]
+    return sorted(ranked, key=lambda p: p.rating, reverse=True)[:limit]
 
 
 def personal_recommendations(history: list[dict], limit: int = 10) -> list[Product]:

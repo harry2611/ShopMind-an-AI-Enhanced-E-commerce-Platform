@@ -4,7 +4,9 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
     environment:
-      VITE_API_URL: http://localhost:8000
+      # Vite dev server proxy target — uses Docker service name
+      VITE_API_PROXY_TARGET: http://backend:8000
+    restart: unless-stopped
     ports:
       - "3000:3000"
     depends_on:
@@ -14,11 +16,22 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
+    restart: unless-stopped
     environment:
-      DATABASE_URL: postgresql+psycopg://shopmind:shopmind@postgres:5432/shopmind
-      REDIS_URL: redis://redis:6379/0
+      DATABASE_URL: ${DATABASE_URL:-postgresql+psycopg://shopmind:shopmind@postgres:5432/shopmind}
+      REDIS_URL: ${REDIS_URL:-redis://redis:6379/0}
+      SECRET_KEY: ${SECRET_KEY:-dev-secret-change-in-production}
+      ENVIRONMENT: ${ENVIRONMENT:-development}
       OPENAI_API_KEY: ${OPENAI_API_KEY:-}
-      CORS_ORIGINS: http://localhost:3000,http://localhost
+      OPENAI_EMBEDDING_MODEL: ${OPENAI_EMBEDDING_MODEL:-text-embedding-3-small}
+      OPENAI_CHAT_MODEL: ${OPENAI_CHAT_MODEL:-gpt-4o-mini}
+      STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY:-}
+      STRIPE_WEBHOOK_SECRET: ${STRIPE_WEBHOOK_SECRET:-}
+      STRIPE_SUCCESS_URL: ${STRIPE_SUCCESS_URL:-http://localhost:3000/orders/success?session_id={CHECKOUT_SESSION_ID}}
+      STRIPE_CANCEL_URL: ${STRIPE_CANCEL_URL:-http://localhost:3000/cart}
+      CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:3000,http://localhost}
+      FRONTEND_URL: ${FRONTEND_URL:-http://localhost:3000}
+      API_RATE_LIMIT: ${API_RATE_LIMIT:-100/minute}
     ports:
       - "8000:8000"
     depends_on:
@@ -29,10 +42,11 @@ services:
 
   postgres:
     image: pgvector/pgvector:pg16
+    restart: unless-stopped
     environment:
       POSTGRES_DB: shopmind
       POSTGRES_USER: shopmind
-      POSTGRES_PASSWORD: shopmind
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-shopmind}
     ports:
       - "5432:5432"
     volumes:
@@ -46,6 +60,8 @@ services:
 
   redis:
     image: redis:7-alpine
+    restart: unless-stopped
+    command: redis-server --appendonly yes --maxmemory 256mb --maxmemory-policy allkeys-lru
     ports:
       - "6379:6379"
     volumes:
@@ -53,6 +69,7 @@ services:
 
   nginx:
     image: nginx:1.27-alpine
+    restart: unless-stopped
     ports:
       - "80:80"
     volumes:

@@ -1,25 +1,45 @@
-from contextlib import contextmanager
-from typing import Iterator
+from collections.abc import AsyncGenerator
 
-import psycopg
-from redis import Redis
+from redis.asyncio import Redis
+from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 
 from app.core.config import get_settings
 
+settings = get_settings()
 
-def psycopg_url() -> str:
-    url = get_settings().database_url
-    return url.replace("postgresql+psycopg://", "postgresql://", 1)
+engine = create_async_engine(
+    settings.database_url,
+    pool_size=10,
+    max_overflow=20,
+    pool_pre_ping=True,
+    echo=settings.environment == "development",
+)
+
+AsyncSessionLocal = async_sessionmaker(
+    engine,
+    class_=AsyncSession,
+    expire_on_commit=False,
+    autocommit=False,
+    autoflush=False,
+)
+
+_redis: Redis | None = None
 
 
-@contextmanager
-def get_connection() -> Iterator[psycopg.Connection]:
-    connection = psycopg.connect(psycopg_url())
-    try:
-        yield connection
-    finally:
-        connection.close()
+async def get_redis_client() -> Redis:
+    global _redis
+    if _redis is None:
+        url = settings.redis_url
+        # Upstash uses rediss:// (TLS) — disable strict cert check for compatibility
+        kwargs: dict = {"decode_responses": True}
+        if url.startswith("rediss://"):
+            kwargs["ssl_cert_reqs"] = None
+        _redis = Redis.from_url(url, **kwargs)
+    return _redis
 
 
-def get_redis() -> Redis:
-    return Redis.from_url(get_settings().redis_url, decode_responses=True)
+async def close_redis() -> None:
+    global _redis
+    if _redis:
+        await _redis.aclose()
+        _redis = None

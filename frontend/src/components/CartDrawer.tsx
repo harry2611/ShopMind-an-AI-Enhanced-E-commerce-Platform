@@ -1,5 +1,6 @@
 import { PackageCheck, Tag, Trash2, X } from 'lucide-react';
 import { useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { api } from '../services/api';
 import { useCart } from '../store/cart';
@@ -8,6 +9,7 @@ import { LazyImage } from './LazyImage';
 
 export function CartDrawer() {
   const cart = useCart();
+  const navigate = useNavigate();
   const [promo, setPromo] = useState('');
   const activeIds = cart.lines.filter((line) => !line.savedForLater).map((line) => line.product.id);
   const bundle = useQuery({
@@ -124,7 +126,14 @@ export function CartDrawer() {
             <div className="flex justify-between"><span>Estimated delivery</span><span>{deliveryDate()}</span></div>
             <div className="mt-2 flex justify-between text-lg font-bold"><span>Total</span><span>{currency.format(total)}</span></div>
           </div>
-          <button type="button" className="mt-4 h-12 w-full rounded bg-ink font-bold text-white">Checkout</button>
+          <button
+            type="button"
+            disabled={cart.lines.filter((l) => !l.savedForLater).length === 0}
+            onClick={() => { cart.close(); navigate('/checkout'); }}
+            className="mt-4 h-12 w-full rounded bg-ink font-bold text-white disabled:bg-slate-300"
+          >
+            Proceed to Checkout
+          </button>
         </div>
       </div>
     </aside>

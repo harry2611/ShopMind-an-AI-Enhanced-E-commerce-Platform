@@ -19,6 +19,8 @@ class Product(BaseModel):
     tags: list[str] = []
     created_at: datetime
 
+    model_config = {"from_attributes": True}
+
 
 class ProductList(BaseModel):
     items: list[Product]
@@ -88,6 +90,8 @@ class Review(BaseModel):
     content: str
     sentiment_score: float
     created_at: datetime
+
+    model_config = {"from_attributes": True}
 
 
 class ReviewSummaryRequest(BaseModel):
