@@ -27,3 +27,7 @@ Then open:
 - Nginx proxy: http://localhost
 
 The backend works without an `OPENAI_API_KEY` by using deterministic local ranking, correction, summarization, and assistant fallbacks. Add `OPENAI_API_KEY` to enable live model-backed behavior where implemented.
+
+## Contributors
+
+- [@harry2611](https://github.com/harry2611)
