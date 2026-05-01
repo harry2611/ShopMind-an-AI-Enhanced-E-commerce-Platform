@@ -54,6 +54,28 @@ Then open:
 
 The backend works without an `OPENAI_API_KEY` by using deterministic local ranking, correction, summarization, and assistant fallbacks. Add `OPENAI_API_KEY` to enable live model-backed behavior where implemented.
 
+## Deploy on Vercel
+
+This repository includes `vercel.json` and `api/index.py` so Vercel can build the React frontend from `frontend/` and serve the FastAPI app through `/api`.
+
+Use these Vercel project settings:
+
+- Framework Preset: `Vite`
+- Install Command: `npm install`
+- Build Command: `npm --prefix frontend run build`
+- Output Directory: `frontend/dist`
+
+Set these environment variables in Vercel when you are ready for live AI services:
+
+- `OPENAI_API_KEY`: optional; without it, ShopMind uses deterministic local AI fallbacks.
+- `CORS_ORIGINS`: optional; set it to your Vercel domain if you later host the backend separately.
+
+After deployment, verify:
+
+- Frontend: `https://your-vercel-domain/`
+- API health: `https://your-vercel-domain/api/health`
+- Product API: `https://your-vercel-domain/api/products`
+
 ## Contributors
 
 - [@harry2611](https://github.com/harry2611)
