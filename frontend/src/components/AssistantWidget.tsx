@@ -131,7 +131,7 @@ export function AssistantWidget() {
     return [{
       id: 'welcome',
       role: 'assistant',
-      content: "Hi! I'm ShopMind. Tell me what you're looking for — a budget, a category, a gift idea — and I'll find it. You can also ask me to track your orders or add items to your cart.",
+      content: "Hi! I'm ShopMind. Tell me what you're looking for: a budget, a category, a gift idea. I'll find it. You can also ask me to track your orders or add items to your cart.",
     }];
   }
 

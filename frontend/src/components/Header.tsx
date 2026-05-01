@@ -75,8 +75,8 @@ export function Header() {
 
           {/* Icon buttons */}
           <div className="flex items-center gap-1.5">
-            <Link
-              to="/wishlist"
+            <button
+              type="button"
               className="relative grid h-10 w-10 place-items-center rounded-xl border border-slate-200 text-slate-600 hover:border-tealbrand hover:text-tealbrand transition-colors"
               aria-label={`${wishlist.ids.length} wishlist items`}
             >
@@ -86,7 +86,7 @@ export function Header() {
                   {wishlist.ids.length}
                 </span>
               )}
-            </Link>
+            </button>
             <button
               type="button"
               onClick={cart.open}

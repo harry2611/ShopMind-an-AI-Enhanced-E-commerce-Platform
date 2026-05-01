@@ -1,5 +1,5 @@
 import { PackageCheck, Tag, Trash2, X } from 'lucide-react';
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { api } from '../services/api';
@@ -10,7 +10,6 @@ import { LazyImage } from './LazyImage';
 export function CartDrawer() {
   const cart = useCart();
   const navigate = useNavigate();
-  const [promo, setPromo] = useState('');
   const activeIds = cart.lines.filter((line) => !line.savedForLater).map((line) => line.product.id);
   const bundle = useQuery({
     queryKey: ['bundle', activeIds.join(',')],
@@ -18,10 +17,11 @@ export function CartDrawer() {
     enabled: cart.isOpen && activeIds.length > 0
   });
   const subtotal = cart.subtotal();
-  const discount = promo.toUpperCase() === 'AISMART10' ? subtotal * 0.1 : 0;
+  const discount = cart.discount();
+  const total = cart.finalTotal();
   const shippingGap = Math.max(0, 75 - subtotal);
-  const total = Math.max(0, subtotal - discount) + (shippingGap === 0 || subtotal === 0 ? 0 : 6.99);
   const alert = useMemo(() => cart.lines.find((line) => line.savedForLater || line.product.price < 60), [cart.lines]);
+  const promoApplied = cart.discountRate > 0;
 
   if (!cart.isOpen) return null;
 
@@ -108,16 +108,29 @@ export function CartDrawer() {
           <label className="mb-2 flex items-center gap-2 text-sm font-semibold" htmlFor="promo-code">
             <Tag className="h-4 w-4" /> Promo code
           </label>
-          <input
-            id="promo-code"
-            value={promo}
-            onChange={(event) => setPromo(event.target.value)}
-            placeholder="AISMART10"
-            className="mb-3 h-11 w-full rounded border border-slate-300 px-3"
-          />
-          {promo && (
-            <p className={`mb-3 text-sm font-medium ${discount ? 'text-tealbrand' : 'text-coral'}`}>
-              {discount ? 'AI validation accepted: 10% off.' : 'AI validation did not find an active offer.'}
+          <div className="mb-3 flex gap-2">
+            <input
+              id="promo-code"
+              value={cart.promoCode}
+              onChange={(e) => cart.applyPromo(e.target.value)}
+              placeholder="AISMART10"
+              className="h-11 flex-1 rounded border border-slate-300 px-3 text-sm"
+            />
+            {cart.promoCode && (
+              <button
+                type="button"
+                onClick={cart.clearPromo}
+                className="rounded border border-slate-300 px-3 text-sm text-slate-500 hover:bg-slate-50"
+              >
+                Clear
+              </button>
+            )}
+          </div>
+          {cart.promoCode && (
+            <p className={`mb-3 text-sm font-medium ${promoApplied ? 'text-tealbrand' : 'text-coral'}`}>
+              {promoApplied
+                ? `Code applied: ${Math.round(cart.discountRate * 100)}% off your order!`
+                : 'Invalid promo code. Try AISMART10.'}
             </p>
           )}
           <div className="grid gap-1 text-sm">
