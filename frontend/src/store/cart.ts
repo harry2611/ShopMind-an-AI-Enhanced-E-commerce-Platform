@@ -11,6 +11,7 @@ type CartState = {
   remove: (productId: string) => void;
   updateQuantity: (productId: string, quantity: number) => void;
   saveForLater: (productId: string, savedForLater: boolean) => void;
+  clear: () => void;
   subtotal: () => number;
 };
 
@@ -47,6 +48,7 @@ export const useCart = create<CartState>()(
         set((state) => ({
           lines: state.lines.map((line) => (line.product.id === productId ? { ...line, savedForLater } : line))
         })),
+      clear: () => set({ lines: [] }),
       subtotal: () =>
         get().lines.reduce(
           (sum, line) => (line.savedForLater ? sum : sum + line.product.price * line.quantity),

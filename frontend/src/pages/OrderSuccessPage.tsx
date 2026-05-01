@@ -5,19 +5,12 @@ import { useCart } from '../store/cart';
 
 export function OrderSuccessPage() {
   const [params] = useSearchParams();
-  const { lines, remove } = useCart();
+  const { clear } = useCart();
   const orderId = params.get('order_id');
-  const [cleared, setCleared] = useState(false);
 
   useEffect(() => {
-    if (!cleared) {
-      // Clear active cart items (not saved-for-later)
-      lines
-        .filter((l) => !l.savedForLater)
-        .forEach((l) => remove(l.product.id));
-      setCleared(true);
-    }
-  }, [cleared, lines, remove]);
+    clear();
+  }, []);
 
   return (
     <div className="mx-auto max-w-lg px-4 py-20 text-center">

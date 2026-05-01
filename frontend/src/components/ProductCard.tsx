@@ -22,10 +22,10 @@ export function ProductCard({ product, onQuickView, compact = false }: Props) {
   return (
     <article className="group grid h-full rounded-lg border border-slate-200 bg-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-panel">
       <div className="relative aspect-[4/3] overflow-hidden rounded-t-lg bg-slate-100">
-        <Link to={`/products/${product.id}`} aria-label={`View ${product.name}`}>
+        <Link to={`/products/${product.id}`} aria-label={`View ${product.name}`} className="absolute inset-0 z-0 block">
           <LazyImage src={product.images[0]} alt={product.name} className="h-full w-full group-hover:scale-105" />
         </Link>
-        <div className="absolute left-3 top-3 rounded bg-white/95 px-2 py-1 text-xs font-semibold text-tealbrand">
+        <div className="absolute left-3 top-3 z-10 rounded bg-white/95 px-2 py-1 text-xs font-semibold text-tealbrand">
           {product.category}
         </div>
         <div className="absolute right-2 top-2 flex gap-2 z-10">
