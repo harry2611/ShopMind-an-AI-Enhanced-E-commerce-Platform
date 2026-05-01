@@ -18,6 +18,8 @@ class CheckoutRequest(BaseModel):
     session_id: str
     items: list[CartLineIn]
     customer_email: str | None = None
+    discount_amount: Decimal | None = None
+    promo_code: str | None = None
 
 
 class CheckoutResponse(BaseModel):

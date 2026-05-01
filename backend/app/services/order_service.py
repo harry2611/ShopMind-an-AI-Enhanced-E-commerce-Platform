@@ -25,7 +25,9 @@ def _get_stripe():
 
 async def create_order(db: AsyncSession, payload: CheckoutRequest, user_id: uuid.UUID | None) -> Order:
     """Create a pending order in the DB."""
-    total = sum(Decimal(str(item.product_price)) * item.quantity for item in payload.items)
+    subtotal = sum(Decimal(str(item.product_price)) * item.quantity for item in payload.items)
+    discount = Decimal(str(payload.discount_amount)) if payload.discount_amount else Decimal("0")
+    total = max(Decimal("0"), subtotal - discount)
     order = Order(
         user_id=user_id,
         session_id=payload.session_id,
