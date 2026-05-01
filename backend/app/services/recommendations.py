@@ -10,9 +10,11 @@ _CATEGORY_KEYWORDS: dict[str, list[str]] = {
     "Electronics": ["electronics", "tech", "gadget", "laptop", "computer", "headphone", "speaker", "camera", "monitor"],
     "Style": ["fashion", "clothing", "clothes", "style", "wear", "shirt", "dress", "pants", "jacket", "shoe", "sneaker"],
     "Home": ["home", "furniture", "kitchen", "bedroom", "living", "house", "decor", "candle", "pillow"],
-    "Wellness": ["wellness", "health", "fitness", "gym", "yoga", "sport", "exercise", "workout", "supplement", "skincare", "cosmetics", "beauty", "makeup", "lipstick", "foundation", "mascara", "perfume", "fragrance", "lotion", "cream", "serum"],
+    "Wellness": ["wellness", "health", "fitness", "gym", "yoga", "sport", "exercise", "workout", "supplement"],
+    "Beauty": ["beauty", "cosmetics", "makeup", "skincare", "lipstick", "foundation", "mascara", "perfume", "fragrance", "lotion", "cream", "serum", "moisturizer", "toner", "blush", "concealer", "eyeliner", "eyeshadow", "skincare", "glow", "face wash", "cleanser"],
     "Mobile": ["mobile", "phone", "smartphone", "iphone", "android", "tablet"],
     "Gifts": ["gift", "present", "birthday", "holiday", "christmas", "anniversary", "mom", "dad", "friend"],
+    "Outdoors": ["outdoor", "hiking", "camping", "trail", "backpack", "bottle", "water bottle", "daypack"],
 }
 
 

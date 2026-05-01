@@ -26,15 +26,51 @@ export function OrdersPage() {
   useEffect(() => {
     if (authLoading) return;
     const token = localStorage.getItem('access_token');
-    const url = user
-      ? `${API_URL}/orders/my`
-      : `${API_URL}/orders/session/${getSessionId()}`;
+    const sessionId = getSessionId();
 
-    fetch(url, { headers: token ? { Authorization: `Bearer ${token}` } : {} })
-      .then((r) => r.json())
-      .then((data) => setOrders(Array.isArray(data) ? data : []))
-      .catch(() => setError('Could not load orders.'))
-      .finally(() => setLoading(false));
+    async function loadOrders() {
+      try {
+        const fetches: Promise<Response>[] = [];
+
+        if (user && token) {
+          // Fetch user's linked orders
+          fetches.push(
+            fetch(`${API_URL}/orders/my`, { headers: { Authorization: `Bearer ${token}` } })
+          );
+        }
+        // Always also fetch by session so orders placed before login are visible
+        fetches.push(
+          fetch(`${API_URL}/orders/session/${sessionId}`)
+        );
+
+        const responses = await Promise.all(fetches);
+        const allOrders: OrderOut[] = [];
+        const seen = new Set<string>();
+
+        for (const res of responses) {
+          if (!res.ok) continue;
+          const data = await res.json();
+          if (Array.isArray(data)) {
+            for (const order of data) {
+              if (!seen.has(order.id)) {
+                seen.add(order.id);
+                allOrders.push(order);
+              }
+            }
+          }
+        }
+
+        // Sort by date descending
+        allOrders.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+        setOrders(allOrders);
+      } catch {
+        setError('Could not load orders.');
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    loadOrders();
   }, [user, authLoading]);
 
   if (authLoading || loading) {

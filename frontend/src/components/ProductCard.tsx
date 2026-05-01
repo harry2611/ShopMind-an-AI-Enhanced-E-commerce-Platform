@@ -20,33 +20,34 @@ export function ProductCard({ product, onQuickView, compact = false }: Props) {
   const wished = wishlist.has(product.id);
 
   return (
-    <article className="group grid h-full rounded-lg border border-slate-200 bg-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-panel">
+    <article className="group relative grid h-full rounded-lg border border-slate-200 bg-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-panel">
+      {/* Buttons sit on the article (outside overflow-hidden) so clicks always register */}
+      <div className="absolute right-2 top-2 flex gap-2 z-20">
+        <button
+          type="button"
+          aria-label={wished ? `Remove ${product.name} from wishlist` : `Add ${product.name} to wishlist`}
+          onClick={(e) => { e.stopPropagation(); wishlist.toggle(product.id); }}
+          className="grid h-9 w-9 place-items-center rounded-full bg-white text-ink shadow-sm focus:outline-none focus:ring-2 focus:ring-tealbrand"
+        >
+          <Heart className={`h-4 w-4 ${wished ? 'fill-coral text-coral' : ''}`} />
+        </button>
+        {onQuickView && (
+          <button
+            type="button"
+            aria-label={`Quick view ${product.name}`}
+            onClick={(e) => { e.stopPropagation(); onQuickView(product); }}
+            className="grid h-9 w-9 place-items-center rounded-full bg-white text-ink opacity-100 shadow-sm focus:outline-none focus:ring-2 focus:ring-tealbrand md:opacity-0 md:group-hover:opacity-100"
+          >
+            <Eye className="h-4 w-4" />
+          </button>
+        )}
+      </div>
       <div className="relative aspect-[4/3] overflow-hidden rounded-t-lg bg-slate-100">
-        <Link to={`/products/${product.id}`} aria-label={`View ${product.name}`} className="absolute inset-0 z-0 block">
+        <Link to={`/products/${product.id}`} aria-label={`View ${product.name}`} className="absolute inset-0 block">
           <LazyImage src={product.images[0]} alt={product.name} className="h-full w-full group-hover:scale-105" />
         </Link>
         <div className="absolute left-3 top-3 z-10 rounded bg-white/95 px-2 py-1 text-xs font-semibold text-tealbrand">
           {product.category}
-        </div>
-        <div className="absolute right-2 top-2 flex gap-2 z-10">
-          <button
-            type="button"
-            aria-label={wished ? `Remove ${product.name} from wishlist` : `Add ${product.name} to wishlist`}
-            onClick={() => wishlist.toggle(product.id)}
-            className="grid h-9 w-9 place-items-center rounded-full bg-white text-ink shadow-sm focus:outline-none focus:ring-2 focus:ring-tealbrand"
-          >
-            <Heart className={`h-4 w-4 ${wished ? 'fill-coral text-coral' : ''}`} />
-          </button>
-          {onQuickView && (
-            <button
-              type="button"
-              aria-label={`Quick view ${product.name}`}
-              onClick={() => onQuickView(product)}
-              className="grid h-9 w-9 place-items-center rounded-full bg-white text-ink opacity-100 shadow-sm focus:outline-none focus:ring-2 focus:ring-tealbrand md:opacity-0 md:group-hover:opacity-100"
-            >
-              <Eye className="h-4 w-4" />
-            </button>
-          )}
         </div>
       </div>
       <div className="grid gap-3 p-4">
