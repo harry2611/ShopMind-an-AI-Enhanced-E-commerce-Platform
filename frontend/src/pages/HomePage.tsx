@@ -97,36 +97,50 @@ export function HomePage() {
   const active = heroSlides[slide];
 
   return (
-    <div className=”bg-mist”>
-      {/* ── Hero ── */}
-      <section className=”relative min-h-[580px] overflow-hidden text-white” style={{ background: 'linear-gradient(135deg, #0f172a 0%, #134e4a 60%, #0f766e 100%)' }}>
+    <div className="bg-mist">
+      {/* Hero */}
+      <section
+        className="relative min-h-[580px] overflow-hidden text-white"
+        style={{ background: 'linear-gradient(135deg, #0f172a 0%, #134e4a 60%, #0f766e 100%)' }}
+      >
         {heroSlides.map((item, index) => (
           <motion.img
             key={item.title}
             src={item.image}
-            alt=””
-            className=”absolute inset-0 h-full w-full object-cover”
+            alt=""
+            className="absolute inset-0 h-full w-full object-cover"
             initial={false}
             animate={{ opacity: index === slide ? 0.28 : 0, scale: index === slide ? 1 : 1.06 }}
             transition={{ duration: 1 }}
           />
         ))}
-        {/* Gradient overlay for depth */}
-        <div className=”absolute inset-0 bg-gradient-to-b from-transparent via-black/10 to-black/40” />
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/10 to-black/40" />
 
-        <div className=”relative mx-auto grid max-w-7xl gap-8 px-4 py-16 md:py-24 md:grid-cols-[1fr_auto] md:items-center”>
-          <motion.div key={active.title} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} className=”max-w-3xl”>
-            <p className=”mb-5 inline-flex items-center gap-2 rounded-full bg-white/15 px-4 py-1.5 text-sm font-semibold backdrop-blur-sm border border-white/20”>
-              <Sparkles className=”h-4 w-4 text-teal-300” />
+        <div className="relative mx-auto grid max-w-7xl gap-8 px-4 py-16 md:py-24 md:grid-cols-[1fr_auto] md:items-center">
+          <motion.div
+            key={active.title}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="max-w-3xl"
+          >
+            <p className="mb-5 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/15 px-4 py-1.5 text-sm font-semibold backdrop-blur-sm">
+              <Sparkles className="h-4 w-4 text-teal-300" />
               ShopMind AI commerce
             </p>
-            <h1 className=”text-4xl font-black leading-tight md:text-5xl lg:text-6xl”>{active.title}</h1>
-            <p className=”mt-4 max-w-xl text-base md:text-lg text-slate-200 leading-relaxed”>{active.copy}</p>
-            <div className=”mt-8 flex flex-wrap gap-3”>
-              <Link to=”/products” className=”rounded-xl bg-white px-6 py-3 font-bold text-ink hover:bg-slate-100 transition-colors shadow-lg”>
+            <h1 className="text-4xl font-black leading-tight md:text-5xl lg:text-6xl">{active.title}</h1>
+            <p className="mt-4 max-w-xl text-base leading-relaxed text-slate-200 md:text-lg">{active.copy}</p>
+            <div className="mt-8 flex flex-wrap gap-3">
+              <Link
+                to="/products"
+                className="rounded-xl bg-white px-6 py-3 font-bold text-ink shadow-lg transition-colors hover:bg-slate-100"
+              >
                 Shop products
               </Link>
-              <Link to=”/search?q=gifts%20under%20%2450” className=”rounded-xl border border-white/40 px-6 py-3 font-bold text-white hover:bg-white/10 transition-colors backdrop-blur-sm”>
+              <Link
+                to="/search?q=gifts%20under%20%2450"
+                className="rounded-xl border border-white/40 px-6 py-3 font-bold text-white backdrop-blur-sm transition-colors hover:bg-white/10"
+              >
                 Gift ideas
               </Link>
             </div>
@@ -135,7 +149,7 @@ export function HomePage() {
         </div>
 
         {/* Slide dots */}
-        <div className=”absolute bottom-5 left-1/2 -translate-x-1/2 flex gap-2”>
+        <div className="absolute bottom-5 left-1/2 flex -translate-x-1/2 gap-2">
           {heroSlides.map((_, i) => (
             <button
               key={i}
@@ -147,70 +161,92 @@ export function HomePage() {
         </div>
       </section>
 
-      <div className=”mx-auto max-w-7xl px-4 py-8”>
-        {/* ── Category grid ── */}
-        <section className=”grid gap-3 py-4 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6” aria-label=”Shop by category”>
+      <div className="mx-auto max-w-7xl px-4 py-8">
+        {/* Category grid */}
+        <section
+          className="grid grid-cols-2 gap-3 py-4 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6"
+          aria-label="Shop by category"
+        >
           {categories.map(({ name, icon: Icon }) => (
             <Link
               key={name}
               to={`/products?category=${encodeURIComponent(name)}`}
-              className=”group flex flex-col items-center gap-2.5 rounded-2xl border border-slate-200 bg-white p-4 text-center font-semibold text-slate-700 transition-all duration-200 hover:-translate-y-0.5 hover:border-tealbrand hover:shadow-md”
+              className="group flex flex-col items-center gap-2.5 rounded-2xl border border-slate-200 bg-white p-4 text-center font-semibold text-slate-700 transition-all duration-200 hover:-translate-y-0.5 hover:border-tealbrand hover:shadow-md"
             >
-              <span className=”grid h-12 w-12 place-items-center rounded-xl bg-gradient-to-br from-teal-50 to-emerald-50 text-tealbrand group-hover:from-tealbrand group-hover:to-teal-500 group-hover:text-white transition-all duration-200”>
-                <Icon className=”h-6 w-6” />
+              <span className="grid h-12 w-12 place-items-center rounded-xl bg-gradient-to-br from-teal-50 to-emerald-50 text-tealbrand transition-all duration-200 group-hover:from-tealbrand group-hover:to-teal-500 group-hover:text-white">
+                <Icon className="h-6 w-6" />
               </span>
-              <span className=”text-xs leading-tight”>{name}</span>
+              <span className="text-xs leading-tight">{name}</span>
             </Link>
           ))}
         </section>
 
         <ProductCarousel
-          title=”Recommended for you”
-          subtitle=”Updated from viewed products, searches, categories, and cart actions.”
+          title="Recommended for you"
+          subtitle="Updated from viewed products, searches, categories, and cart actions."
           products={recommended.length ? recommended : personal.data}
         />
 
-        <section className=”py-8”>
-          <div className=”mb-6 flex items-end justify-between”>
+        <section className="py-8">
+          <div className="mb-6 flex items-end justify-between">
             <div>
-              <h2 className=”text-2xl font-bold text-ink”>Trending now</h2>
-              <p className=”mt-1 text-sm text-slate-500”>Popular picks across ShopMind.</p>
+              <h2 className="text-2xl font-bold text-ink">Trending now</h2>
+              <p className="mt-1 text-sm text-slate-500">Popular picks across ShopMind.</p>
             </div>
-            <Link to=”/products?sort=best_rated” className=”text-sm font-bold text-tealbrand hover:underline”>View all →</Link>
+            <Link to="/products?sort=best_rated" className="text-sm font-bold text-tealbrand hover:underline">
+              View all
+            </Link>
           </div>
-          <div className=”grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4”>
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {(trending.data ?? []).slice(0, 8).map((product) => (
               <ProductCard key={product.id} product={product} />
             ))}
           </div>
         </section>
 
-        {/* ── Feature banners ── */}
-        <section className=”grid gap-4 py-6 md:grid-cols-2”>
-          <div className=”rounded-2xl overflow-hidden relative bg-coral p-6 text-white”>
-            <div className=”absolute right-0 bottom-0 opacity-10”>
-              <ShoppingBasket className=”h-32 w-32” />
+        {/* Feature banners */}
+        <section className="grid gap-4 py-6 md:grid-cols-2">
+          <div className="relative overflow-hidden rounded-2xl bg-coral p-6 text-white">
+            <div className="absolute bottom-0 right-0 opacity-10">
+              <ShoppingBasket className="h-32 w-32" />
             </div>
-            <h2 className=”text-xl font-black”>Bundle smarter 🛒</h2>
-            <p className=”mt-2 max-w-xs text-sm text-white/90 leading-relaxed”>Cart recommendations surface frequently-bought-together items and free-shipping gap fillers.</p>
-            <Link to=”/products” className=”mt-4 inline-flex rounded-lg bg-white/20 px-4 py-2 text-sm font-semibold hover:bg-white/30 transition-colors”>
-              Explore bundles →
+            <h2 className="text-xl font-black">Bundle smarter</h2>
+            <p className="mt-2 max-w-xs text-sm leading-relaxed text-white/90">
+              Cart recommendations surface frequently-bought-together items and free-shipping gap fillers.
+            </p>
+            <Link
+              to="/products"
+              className="mt-4 inline-flex rounded-lg bg-white/20 px-4 py-2 text-sm font-semibold transition-colors hover:bg-white/30"
+            >
+              Explore bundles
             </Link>
           </div>
-          <div className=”rounded-2xl overflow-hidden relative p-6 text-white” style={{ background: 'linear-gradient(135deg, #0f766e, #0d9488)' }}>
-            <div className=”absolute right-0 bottom-0 opacity-10”>
-              <Sparkles className=”h-32 w-32” />
+          <div
+            className="relative overflow-hidden rounded-2xl p-6 text-white"
+            style={{ background: 'linear-gradient(135deg, #0f766e, #0d9488)' }}
+          >
+            <div className="absolute bottom-0 right-0 opacity-10">
+              <Sparkles className="h-32 w-32" />
             </div>
-            <h2 className=”text-xl font-black”>Voice & AI search 🎙️</h2>
-            <p className=”mt-2 max-w-xs text-sm text-white/90 leading-relaxed”>Try “laptop for video editing under $1500” or “gifts for my mom who loves yoga” — ShopMind understands.</p>
-            <Link to=”/search” className=”mt-4 inline-flex rounded-lg bg-white/20 px-4 py-2 text-sm font-semibold hover:bg-white/30 transition-colors”>
-              Try it now →
+            <h2 className="text-xl font-black">Voice and AI search</h2>
+            <p className="mt-2 max-w-xs text-sm leading-relaxed text-white/90">
+              Try &quot;laptop for video editing under $1500&quot; or &quot;gifts for my mom who loves yoga&quot; and ShopMind understands.
+            </p>
+            <Link
+              to="/search"
+              className="mt-4 inline-flex rounded-lg bg-white/20 px-4 py-2 text-sm font-semibold transition-colors hover:bg-white/30"
+            >
+              Try it now
             </Link>
           </div>
         </section>
 
         {recentlyViewed.length > 0 && (
-          <ProductCarousel title=”Recently viewed” subtitle=”Back to browsing, right where you left off.” products={recentlyViewed} />
+          <ProductCarousel
+            title="Recently viewed"
+            subtitle="Back to browsing, right where you left off."
+            products={recentlyViewed}
+          />
         )}
       </div>
     </div>

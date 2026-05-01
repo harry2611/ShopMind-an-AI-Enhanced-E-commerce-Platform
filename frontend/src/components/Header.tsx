@@ -1,5 +1,5 @@
 import { Heart, Menu, Package, ShoppingBag, Sparkles, User, X } from 'lucide-react';
-import { useState } from 'react';
+import { type ReactNode, useState } from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../store/cart';
@@ -169,7 +169,7 @@ export function Header() {
   );
 }
 
-function MobileLink({ to, onClick, children }: { to: string; onClick: () => void; children: React.ReactNode }) {
+function MobileLink({ to, onClick, children }: { to: string; onClick: () => void; children: ReactNode }) {
   return (
     <NavLink
       to={to}
