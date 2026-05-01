@@ -28,7 +28,7 @@ export function ProductCard({ product, onQuickView, compact = false }: Props) {
         <div className="absolute left-3 top-3 rounded bg-white/95 px-2 py-1 text-xs font-semibold text-tealbrand">
           {product.category}
         </div>
-        <div className="absolute right-2 top-2 flex gap-2">
+        <div className="absolute right-2 top-2 flex gap-2 z-10">
           <button
             type="button"
             aria-label={wished ? `Remove ${product.name} from wishlist` : `Add ${product.name} to wishlist`}
