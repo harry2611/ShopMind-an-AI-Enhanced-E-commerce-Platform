@@ -269,22 +269,24 @@ async def _rule_based_stream(
     from app.services.recommendations import parse_price_filter
     min_p, max_p = parse_price_filter(latest)
     if (min_p or max_p) and products:
+        shown = products[:3]
         price_hint = f"under ${max_p}" if max_p else f"over ${min_p}"
-        text = f"Found {len(products)} option{'s' if len(products) != 1 else ''} {price_hint}. Top pick: {products[0].name} at ${products[0].price}."
+        text = f"Found {len(shown)} option{'s' if len(shown) != 1 else ''} {price_hint}. Top pick: {shown[0].name} at ${shown[0].price}."
         async for chunk in stream_text(text):
             yield chunk
-        yield f"data: {json.dumps({'products': [p.model_dump(mode='json') for p in products[:3]]})}\n\n"
+        yield f"data: {json.dumps({'products': [p.model_dump(mode='json') for p in shown]})}\n\n"
         return
 
     # ── Generic with results ─────────────────────────────────────────────────
     if products:
+        shown = products[:3]
         text = (
-            f"Found {len(products)} great match{'es' if len(products) != 1 else ''} for you! "
-            f"Top pick: {products[0].name} at ${products[0].price} — rated {products[0].rating:.1f} ⭐."
+            f"Here {'are' if len(shown) > 1 else 'is'} {len(shown)} great match{'es' if len(shown) != 1 else ''} for you! "
+            f"Top pick: {shown[0].name} at ${shown[0].price} — rated {shown[0].rating:.1f} ⭐."
         )
         async for chunk in stream_text(text):
             yield chunk
-        yield f"data: {json.dumps({'products': [p.model_dump(mode='json') for p in products[:3]]})}\n\n"
+        yield f"data: {json.dumps({'products': [p.model_dump(mode='json') for p in shown]})}\n\n"
         return
 
     # ── No results ───────────────────────────────────────────────────────────

@@ -97,83 +97,120 @@ export function HomePage() {
   const active = heroSlides[slide];
 
   return (
-    <div className="bg-mist">
-      <section className="relative min-h-[540px] overflow-hidden bg-ink text-white">
+    <div className=”bg-mist”>
+      {/* ── Hero ── */}
+      <section className=”relative min-h-[580px] overflow-hidden text-white” style={{ background: 'linear-gradient(135deg, #0f172a 0%, #134e4a 60%, #0f766e 100%)' }}>
         {heroSlides.map((item, index) => (
           <motion.img
             key={item.title}
             src={item.image}
-            alt=""
-            className="absolute inset-0 h-full w-full object-cover"
+            alt=””
+            className=”absolute inset-0 h-full w-full object-cover”
             initial={false}
-            animate={{ opacity: index === slide ? 0.42 : 0, scale: index === slide ? 1 : 1.04 }}
-            transition={{ duration: 0.8 }}
+            animate={{ opacity: index === slide ? 0.28 : 0, scale: index === slide ? 1 : 1.06 }}
+            transition={{ duration: 1 }}
           />
         ))}
-        <div className="relative mx-auto grid max-w-7xl gap-8 px-4 py-20 md:grid-cols-[1fr_auto] md:items-end">
-          <motion.div key={active.title} initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} className="max-w-3xl">
-            <p className="mb-4 inline-flex rounded bg-white/15 px-3 py-1 text-sm font-bold backdrop-blur">ShopMind AI commerce</p>
-            <h1 className="text-4xl font-black leading-tight md:text-6xl">{active.title}</h1>
-            <p className="mt-5 max-w-2xl text-lg text-slate-100">{active.copy}</p>
-            <div className="mt-8 flex flex-wrap gap-3">
-              <Link to="/products" className="rounded bg-white px-5 py-3 font-bold text-ink">Shop products</Link>
-              <Link to="/search?q=gifts%20under%20%2450" className="rounded border border-white/60 px-5 py-3 font-bold text-white">Ask for gift ideas</Link>
+        {/* Gradient overlay for depth */}
+        <div className=”absolute inset-0 bg-gradient-to-b from-transparent via-black/10 to-black/40” />
+
+        <div className=”relative mx-auto grid max-w-7xl gap-8 px-4 py-16 md:py-24 md:grid-cols-[1fr_auto] md:items-center”>
+          <motion.div key={active.title} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} className=”max-w-3xl”>
+            <p className=”mb-5 inline-flex items-center gap-2 rounded-full bg-white/15 px-4 py-1.5 text-sm font-semibold backdrop-blur-sm border border-white/20”>
+              <Sparkles className=”h-4 w-4 text-teal-300” />
+              ShopMind AI commerce
+            </p>
+            <h1 className=”text-4xl font-black leading-tight md:text-5xl lg:text-6xl”>{active.title}</h1>
+            <p className=”mt-4 max-w-xl text-base md:text-lg text-slate-200 leading-relaxed”>{active.copy}</p>
+            <div className=”mt-8 flex flex-wrap gap-3”>
+              <Link to=”/products” className=”rounded-xl bg-white px-6 py-3 font-bold text-ink hover:bg-slate-100 transition-colors shadow-lg”>
+                Shop products
+              </Link>
+              <Link to=”/search?q=gifts%20under%20%2450” className=”rounded-xl border border-white/40 px-6 py-3 font-bold text-white hover:bg-white/10 transition-colors backdrop-blur-sm”>
+                Gift ideas
+              </Link>
             </div>
           </motion.div>
           <PromoCountdown />
         </div>
+
+        {/* Slide dots */}
+        <div className=”absolute bottom-5 left-1/2 -translate-x-1/2 flex gap-2”>
+          {heroSlides.map((_, i) => (
+            <button
+              key={i}
+              onClick={() => setSlide(i)}
+              className={`h-1.5 rounded-full transition-all duration-300 ${i === slide ? 'w-6 bg-white' : 'w-1.5 bg-white/40'}`}
+              aria-label={`Go to slide ${i + 1}`}
+            />
+          ))}
+        </div>
       </section>
 
-      <div className="mx-auto max-w-7xl px-4 py-8">
-        <section className="grid gap-3 py-4 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-6" aria-label="Shop by category">
+      <div className=”mx-auto max-w-7xl px-4 py-8”>
+        {/* ── Category grid ── */}
+        <section className=”grid gap-3 py-4 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6” aria-label=”Shop by category”>
           {categories.map(({ name, icon: Icon }) => (
             <Link
               key={name}
               to={`/products?category=${encodeURIComponent(name)}`}
-              className="flex min-h-24 items-center gap-3 rounded-lg border border-slate-200 bg-white p-4 font-bold text-ink hover:border-tealbrand"
+              className=”group flex flex-col items-center gap-2.5 rounded-2xl border border-slate-200 bg-white p-4 text-center font-semibold text-slate-700 transition-all duration-200 hover:-translate-y-0.5 hover:border-tealbrand hover:shadow-md”
             >
-              <span className="grid h-11 w-11 place-items-center rounded bg-teal-50 text-tealbrand">
-                <Icon className="h-5 w-5" />
+              <span className=”grid h-12 w-12 place-items-center rounded-xl bg-gradient-to-br from-teal-50 to-emerald-50 text-tealbrand group-hover:from-tealbrand group-hover:to-teal-500 group-hover:text-white transition-all duration-200”>
+                <Icon className=”h-6 w-6” />
               </span>
-              {name}
+              <span className=”text-xs leading-tight”>{name}</span>
             </Link>
           ))}
         </section>
 
         <ProductCarousel
-          title="Recommended for you"
-          subtitle="Updated from viewed products, searches, categories, and cart actions."
+          title=”Recommended for you”
+          subtitle=”Updated from viewed products, searches, categories, and cart actions.”
           products={recommended.length ? recommended : personal.data}
         />
 
-        <section className="py-8">
-          <div className="mb-4 flex items-end justify-between">
+        <section className=”py-8”>
+          <div className=”mb-6 flex items-end justify-between”>
             <div>
-              <h2 className="text-2xl font-bold text-ink">Trending products</h2>
-              <p className="mt-1 text-sm text-slate-600">Popular right now across ShopMind.</p>
+              <h2 className=”text-2xl font-bold text-ink”>Trending now</h2>
+              <p className=”mt-1 text-sm text-slate-500”>Popular picks across ShopMind.</p>
             </div>
-            <Link to="/products?sort=best_rated" className="font-bold text-tealbrand">View all</Link>
+            <Link to=”/products?sort=best_rated” className=”text-sm font-bold text-tealbrand hover:underline”>View all →</Link>
           </div>
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <div className=”grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4”>
             {(trending.data ?? []).slice(0, 8).map((product) => (
               <ProductCard key={product.id} product={product} />
             ))}
           </div>
         </section>
 
-        <section className="grid gap-4 py-6 md:grid-cols-2">
-          <div className="rounded-lg bg-coral p-6 text-white">
-            <h2 className="text-2xl font-black">Bundle smarter</h2>
-            <p className="mt-2 max-w-lg">Cart recommendations look for frequently bought together items and free-shipping gaps.</p>
+        {/* ── Feature banners ── */}
+        <section className=”grid gap-4 py-6 md:grid-cols-2”>
+          <div className=”rounded-2xl overflow-hidden relative bg-coral p-6 text-white”>
+            <div className=”absolute right-0 bottom-0 opacity-10”>
+              <ShoppingBasket className=”h-32 w-32” />
+            </div>
+            <h2 className=”text-xl font-black”>Bundle smarter 🛒</h2>
+            <p className=”mt-2 max-w-xs text-sm text-white/90 leading-relaxed”>Cart recommendations surface frequently-bought-together items and free-shipping gap fillers.</p>
+            <Link to=”/products” className=”mt-4 inline-flex rounded-lg bg-white/20 px-4 py-2 text-sm font-semibold hover:bg-white/30 transition-colors”>
+              Explore bundles →
+            </Link>
           </div>
-          <div className="rounded-lg bg-tealbrand p-6 text-white">
-            <h2 className="text-2xl font-black">Voice search ready</h2>
-            <p className="mt-2 max-w-lg">Use natural language like “laptop for video editing” or “red shoes under $50”.</p>
+          <div className=”rounded-2xl overflow-hidden relative p-6 text-white” style={{ background: 'linear-gradient(135deg, #0f766e, #0d9488)' }}>
+            <div className=”absolute right-0 bottom-0 opacity-10”>
+              <Sparkles className=”h-32 w-32” />
+            </div>
+            <h2 className=”text-xl font-black”>Voice & AI search 🎙️</h2>
+            <p className=”mt-2 max-w-xs text-sm text-white/90 leading-relaxed”>Try “laptop for video editing under $1500” or “gifts for my mom who loves yoga” — ShopMind understands.</p>
+            <Link to=”/search” className=”mt-4 inline-flex rounded-lg bg-white/20 px-4 py-2 text-sm font-semibold hover:bg-white/30 transition-colors”>
+              Try it now →
+            </Link>
           </div>
         </section>
 
         {recentlyViewed.length > 0 && (
-          <ProductCarousel title="Recently viewed" subtitle="Back to browsing, right where you left off." products={recentlyViewed} />
+          <ProductCarousel title=”Recently viewed” subtitle=”Back to browsing, right where you left off.” products={recentlyViewed} />
         )}
       </div>
     </div>
