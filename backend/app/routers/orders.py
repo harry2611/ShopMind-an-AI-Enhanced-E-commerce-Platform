@@ -18,6 +18,7 @@ router = APIRouter(prefix="/orders", tags=["orders"])
 
 @router.post("/checkout", response_model=CheckoutResponse)
 async def checkout(
+    request: Request,
     payload: CheckoutRequest,
     db: DBDep,
     current_user: OptionalUser,
@@ -30,10 +31,20 @@ async def checkout(
     checkout_url = await create_stripe_checkout(order, payload.items)
 
     if not checkout_url:
-        # Stripe not configured — use a mock success URL for development
+        # Stripe not configured — build mock URL from request origin so it
+        # works on any deployment (Vercel, localhost, etc.)
         from app.core.config import get_settings
         settings = get_settings()
-        checkout_url = f"{settings.frontend_url}/orders/success?order_id={order.id}&mock=true"
+        origin = (
+            request.headers.get("origin")
+            or request.headers.get("referer", "").rstrip("/")
+            or settings.frontend_url
+        )
+        # Strip trailing path from referer so we get just the origin
+        if "://" in origin and origin.count("/") > 2:
+            parts = origin.split("/")
+            origin = "/".join(parts[:3])
+        checkout_url = f"{origin}/orders/success?order_id={order.id}&mock=true"
 
     return CheckoutResponse(checkout_url=checkout_url, order_id=order.id)
 

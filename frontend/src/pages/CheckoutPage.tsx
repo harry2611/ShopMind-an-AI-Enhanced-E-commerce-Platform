@@ -64,7 +64,12 @@ export function CheckoutPage() {
       }
 
       const { checkout_url } = await res.json();
-      window.location.href = checkout_url;
+      // Safety: if backend returned a localhost URL but we're on a real host, fix it
+      const finalUrl =
+        checkout_url.includes('localhost') && window.location.hostname !== 'localhost'
+          ? checkout_url.replace(/https?:\/\/[^/]+/, window.location.origin)
+          : checkout_url;
+      window.location.href = finalUrl;
     } catch (err: any) {
       setError(err.message ?? 'Something went wrong. Please try again.');
     } finally {
